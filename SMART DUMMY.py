@@ -5,9 +5,9 @@ import random
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-PURPLE = (255, 0, 255)
+GREEN = (0, 155, 0)
+RED = (155, 0, 0)
+PURPLE = (100, 0, 100)
 RED2 = (200, 50, 50)
 PINK = (250, 150, 150)
 BUTTONBLUE = (0, 58, 254)
@@ -17,13 +17,13 @@ pygame.init()
 screen = pygame.display.set_mode([1920, 1050])
 pygame.display.set_caption('Country Simulator')
 
-button_positionsx = [20, 20, 20, 20, 1000, 1000, 1000, 1000]
-button_positionsw = [900, 900, 900, 900, 900, 900, 900, 900]
-button_positionsy = [300, 490, 680, 870, 300, 490, 680, 870]
-button_positionsh = [150, 150, 150, 150, 150, 150, 150, 150]
-button_colors = [BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE]
-button_colsOG = [BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE, BUTTONBLUE]
-button_text = ['Scenarios', 'Scenarios', 'Scenarios', 'Scenarios', 'Scenarios', 'Scenarios', 'Scenarios', 'Scenarios']
+button_positionsx = [635, 955, 1275, 1595, 635, 955, 1275, 1595]
+button_positionsy = [50, 50, 50, 50, 600, 600, 600, 600]
+button_positionsw = [290, 290, 290, 290, 290, 290, 290, 290]
+button_positionsh = [400, 400, 400, 400, 400, 400, 400, 400]
+button_colors = [BUTTONBLUE, GREEN, RED, PURPLE, PURPLE, RED, GREEN, BUTTONBLUE]
+button_colsOG = [BUTTONBLUE, GREEN, RED, PURPLE, PURPLE, RED, GREEN, BUTTONBLUE]
+button_text = ['Save', 'Save', 'Save', 'Save', 'Save', 'Save', 'Save', 'Save']
 
 ###############
 'Functions'
@@ -99,10 +99,22 @@ def dispfxn(fxnnum):
         ''
         #Display fxn in info tab
 
-titlefont = pygame.font.SysFont('Times New Roman', 100)
-subtitlefont = pygame.font.SysFont('Times New Roman', 80)
+titlefont = pygame.font.SysFont('Helvetica', 100)
+subtitlefont = pygame.font.SysFont('Times New Roman', 70)
 #textsurface = myfont.render('Some Text', False, (0, 0, 0)) #Text Here
 #screen.blit(textsurface,(0,0))
+
+sbx = []
+sby = []
+sbw = []
+sbh = []
+counter = 10
+while counter >= 1:
+    sbx.append(50)
+    sby.append(100 * counter - 25)
+    sbw.append(500)
+    sbh.append(50)
+    counter -= 1
 
 
 
@@ -118,9 +130,13 @@ while not done:
         for i in range(len(button_positionsx)):
             mousex, mousey = get_pos
             if (mousex > (button_positionsx[i]) and  (mousey > button_positionsy[i]) and (mousex < (button_positionsx[i] + button_positionsw[i])) and (mousey < button_positionsy[i] + button_positionsh[i])):
-                button_colors[i] = PINK
+                button_colors[i] = (30,30,30)
             else:
                 button_colors[i] = button_colsOG[i]
+
+        for i in range(len(sbx)):
+            if (mousex > (sbx[i]) and  (mousey > sby[i]) and (mousex < (sbx[i] + sbw[i])) and (mousey < sby[i] + sbh[i])):
+                sbc[i] = (100,100,100) #Work on button colors on left buttons
 
         pygame.display.update()
         
@@ -130,23 +146,32 @@ while not done:
             elif (button_colors[i] == PINK) and (pygame.mouse.get_pressed() == (False, False, False)):
                 dispfxn(i)
  
+        pygame.draw.rect(screen, (0, 0, 0), (0, 0, 1920, 1050))
+        #Sidebar
+        pygame.draw.rect(screen, (50, 50, 50), (0, 0, 600, 1050))
+        pygame.draw.rect(screen, (255, 255, 255), (600, 0, 10, 1050))
+        counter = 10
+        while counter >= 1:
+            pygame.draw.rect(screen, (255, 255, 255), (50, 100 * counter - 50, 500, 10))
+            counter -= 1
 
+        counter = 10
+        while counter >= 1:
+            pygame.draw.rect(screen, (200, 200, 200), (50, 100 * counter - 25, 500, 50))
+            counter -= 1
+
+        pygame.draw.rect(screen, (255, 255, 255), (600, 0, 10, 1050))
+        
         #Display the Buttons
-        pygame.draw.rect(screen, (205, 205, 205), (0, 0, 1920, 1050))
+        for i in range(len(button_positionsx)):
+            pygame.draw.rect(screen, (50,50,50), (button_positionsx[i] - 5, button_positionsy[i] - 5, button_positionsw[i] + 10, button_positionsh[i] + 10))
+
         for i in range(len(button_positionsx)):
             pygame.draw.rect(screen, button_colors[i], (button_positionsx[i], button_positionsy[i], button_positionsw[i], button_positionsh[i]))
             textsurface = subtitlefont.render(button_text[i], False, (255, 255, 255)) #Text Here
-            screen.blit(textsurface,(button_positionsx[i] + 250,button_positionsy[i] + 30))
+            screen.blit(textsurface,(button_positionsx[i] + 12,button_positionsy[i] + 30))
+            pygame.draw.rect(screen, (255,255,255), (button_positionsx[i] + 50, button_positionsy[i] + (button_positionsh[i] / 2 ) * 1.5, button_positionsw[i] - 100, 5))
 
-        textsurface = titlefont.render('Smart Dummy', False, (0, 0, 0)) #Text Here
-        screen.blit(textsurface,(700,100))
         
  
 pygame.quit()
-
-#Moving Logic
-#if event.type == pygame.KEYDOWN:
-    #if event.key == pygame.K_LEFT:
-        #player.changespeed(-5, 0)
-                
-
