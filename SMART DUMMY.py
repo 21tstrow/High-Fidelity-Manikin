@@ -108,15 +108,18 @@ sbx = []
 sby = []
 sbw = []
 sbh = []
+sbc = []
+sbt = ["Settings", "Diagnostics", "", "", "", "", "", "Save Data", "Scenario Design", "Scenarios"]
 counter = 10
 while counter >= 1:
     sbx.append(50)
     sby.append(100 * counter - 25)
     sbw.append(500)
     sbh.append(50)
+    sbc.append(WHITE)
     counter -= 1
 
-
+smallbuttonfont = pygame.font.SysFont('Times New Roman', 50)
 
 done = False
 while not done:
@@ -136,7 +139,9 @@ while not done:
 
         for i in range(len(sbx)):
             if (mousex > (sbx[i]) and  (mousey > sby[i]) and (mousex < (sbx[i] + sbw[i])) and (mousey < sby[i] + sbh[i])):
-                sbc[i] = (100,100,100) #Work on button colors on left buttons
+                sbc[i] = (200,200,200)
+            else:
+                sbc[i] = (255,255,255)
 
         pygame.display.update()
         
@@ -147,18 +152,16 @@ while not done:
                 dispfxn(i)
  
         pygame.draw.rect(screen, (0, 0, 0), (0, 0, 1920, 1050))
+
         #Sidebar
         pygame.draw.rect(screen, (50, 50, 50), (0, 0, 600, 1050))
         pygame.draw.rect(screen, (255, 255, 255), (600, 0, 10, 1050))
-        counter = 10
-        while counter >= 1:
-            pygame.draw.rect(screen, (255, 255, 255), (50, 100 * counter - 50, 500, 10))
-            counter -= 1
+        for i in range(len(sbx)):
+            pygame.draw.rect(screen, sbc[i], (sbx[i], sby[i], sbw[i], sbh[i]))
+            pygame.draw.rect(screen, (255,255,255), (50, sby[i] + 60, 500, 10))
+            textsurface = smallbuttonfont.render(sbt[i], False, (0, 0, 0))
+            screen.blit(textsurface,(sbx[i], sby[i] - 5))
 
-        counter = 10
-        while counter >= 1:
-            pygame.draw.rect(screen, (200, 200, 200), (50, 100 * counter - 25, 500, 50))
-            counter -= 1
 
         pygame.draw.rect(screen, (255, 255, 255), (600, 0, 10, 1050))
         
