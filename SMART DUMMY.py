@@ -1,6 +1,15 @@
 import pygame
 from pygame.locals import *
 import random
+import tkinter as tk
+
+#Aspect Ratio
+root = tk.Tk()
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+wRatio = float(screen_width / 1920)
+hRatio = float(screen_height / 1050)
+
 #Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -14,7 +23,7 @@ BUTTONBLUE = (0, 58, 254)
 
 pygame.init()
 
-screen = pygame.display.set_mode([1920, 1050])
+screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption('SMART DUMMY')
 
 button_positionsx = [635, 955, 1275, 1595, 635, 955, 1275, 1595]
@@ -25,6 +34,15 @@ button_colors = [BUTTONBLUE, GREEN, RED, PURPLE, PURPLE, RED, GREEN, BUTTONBLUE]
 button_colsOG = [BUTTONBLUE, GREEN, RED, PURPLE, PURPLE, RED, GREEN, BUTTONBLUE]
 button_text = ['Save 1', 'Save 2', 'Save 3', 'Save 4', 'Save 5', 'Save 6', 'Save 7', 'Save 8']
 
+for i in range(len(button_positionsx)):
+    button_positionsx[i] = int(button_positionsx[i] * wRatio)
+for i in range(len(button_positionsy)):
+    button_positionsy[i] = int(button_positionsy[i] * hRatio)
+for i in range(len(button_positionsw)):
+    button_positionsw[i] = int(button_positionsw[i] * wRatio)
+for i in range(len(button_positionsh)):
+    button_positionsh[i] = int(button_positionsh[i] * hRatio)
+    
 ###############
 'Functions'
 ###############
@@ -42,7 +60,7 @@ def ask(screen, question):
 
 
 def display_box(screen, qa):
-    pygame.draw.rect(screen, (100,100,100), (0,0,800,800))
+    pygame.draw.rect(screen, (100,100,100), (0,0,int(800 * wRatio),int(800 * hRatio)))
     textsurface = smallbuttonfont.render(qa, False, (0, 0, 0))
     screen.blit(textsurface,(0,0))
     pygame.display.update()
@@ -58,7 +76,17 @@ def enter_number(variable):
     number_positionsw = [175, 175, 175, 175, 175, 175, 175, 175, 175, 175, 175]
     number_positionsh = [175, 175, 175, 175, 175, 175, 175, 175, 175, 175, 175]
     numkeydone = False
-    pygame.draw.rect(screen, (100,100,100), (0,0,800,800))
+
+    for i in range(len(button_positionsx)):
+        number_positionsx[i] = int(number_positionsx[i] * wRatio)
+    for i in range(len(button_positionsy)):
+        number_positionsy[i] = int(number_positionsy[i] * hRatio)
+    for i in range(len(button_positionsw)):
+        number_positionsw[i] = int(number_positionsw[i] * wRatio)
+    for i in range(len(button_positionsh)):
+        number_positionsh[i] = int(number_positionsh[i] * hRatio)
+    
+    pygame.draw.rect(screen, (100,100,100), (0,0,int(800 * wRatio),int(800 * hRatio)))
     #load number grid
     while not numkeydone:
         pygame.event.get()
@@ -139,8 +167,8 @@ def dispfxn(fxnnum):
         ''
         #Display fxn in info tab
 
-titlefont = pygame.font.SysFont('Helvetica', 100)
-subtitlefont = pygame.font.SysFont('Times New Roman', 70)
+titlefont = pygame.font.SysFont('Helvetica', int(100 * hRatio))
+subtitlefont = pygame.font.SysFont('Times New Roman', int(70 * hRatio))
 #textsurface = myfont.render('Some Text', False, (0, 0, 0)) #Text Here
 #screen.blit(textsurface,(0,0))
 
@@ -152,14 +180,14 @@ sbc = []
 sbt = ["Settings", "Diagnostics", "", "", "", "", "", "Save Data", "Scenario Design", "Scenarios"]
 counter = 10
 while counter >= 1:
-    sbx.append(50)
-    sby.append(100 * counter - 60)
-    sbw.append(500)
-    sbh.append(50)
+    sbx.append(int(50 * wRatio))
+    sby.append(int((100 * counter - 60) * hRatio))
+    sbw.append(int(500 * wRatio))
+    sbh.append(int(50 * hRatio))
     sbc.append(WHITE)
     counter -= 1
 
-smallbuttonfont = pygame.font.SysFont('Times New Roman', 50)
+smallbuttonfont = pygame.font.SysFont('Times New Roman', int(50 * hRatio))
 
 done = False
 while not done:
@@ -195,29 +223,29 @@ while not done:
                 runfxn(sidebar,'sidebar')
                 print("y")
  
-        pygame.draw.rect(screen, (0, 0, 0), (0, 0, 1920, 1050))
+        pygame.draw.rect(screen, (0, 0, 0), (0, 0, screen_width, screen_height))
 
         #Sidebar
-        pygame.draw.rect(screen, (50, 50, 50), (0, 0, 600, 1050))
-        pygame.draw.rect(screen, (255, 255, 255), (600, 0, 10, 1050))
+        pygame.draw.rect(screen, (50, 50, 50), (0, 0, int(600 * wRatio), screen_height))
+        pygame.draw.rect(screen, (255, 255, 255), (int(600 * wRatio), 0, int(10 * wRatio), screen_height))
         for i in range(len(sbx)):
             pygame.draw.rect(screen, sbc[i], (sbx[i], sby[i], sbw[i], sbh[i]))
-            pygame.draw.rect(screen, (255,255,255), (50, sby[i] + 60, 500, 10))
+            pygame.draw.rect(screen, (255,255,255), (int(50 * wRatio), sby[i] + int(60 * hRatio), int(500 * wRatio), int(10 * hRatio)))
             textsurface = smallbuttonfont.render(sbt[i], False, (0, 0, 0))
-            screen.blit(textsurface,(sbx[i], sby[i] - 5))
+            screen.blit(textsurface,(sbx[i], sby[i] - int(5 * hRatio)))
 
 
-        pygame.draw.rect(screen, (255, 255, 255), (600, 0, 10, 1050))
+        pygame.draw.rect(screen, (255, 255, 255), (int(600 * wRatio), 0, int(10 * wRatio), screen_height))
         
         #Display the Buttons
         for i in range(len(button_positionsx)):
-            pygame.draw.rect(screen, (50,50,50), (button_positionsx[i] - 5, button_positionsy[i] - 5, button_positionsw[i] + 10, button_positionsh[i] + 10))
+            pygame.draw.rect(screen, (50,50,50), (button_positionsx[i] - int(5 * wRatio), button_positionsy[i] - int(5 * hRatio), button_positionsw[i] + int(10 * wRatio), button_positionsh[i] + int(10 * hRatio)))
 
         for i in range(len(button_positionsx)):
             pygame.draw.rect(screen, button_colors[i], (button_positionsx[i], button_positionsy[i], button_positionsw[i], button_positionsh[i]))
             textsurface = subtitlefont.render(button_text[i], False, (255, 255, 255)) #Text Here
-            screen.blit(textsurface,(button_positionsx[i] + 12,button_positionsy[i] + 30))
-            pygame.draw.rect(screen, (255,255,255), (button_positionsx[i] + 50, button_positionsy[i] + (button_positionsh[i] / 2 ) * 1.5, button_positionsw[i] - 100, 5))
+            screen.blit(textsurface,(button_positionsx[i] + int(12 * wRatio),button_positionsy[i] + int(30 * hRatio)))
+            pygame.draw.rect(screen, (255,255,255), (button_positionsx[i] + int(50 * wRatio), button_positionsy[i] + (button_positionsh[i] / 2 ) * 1.5, button_positionsw[i] - int(100 * wRatio), int(5 * hRatio)))
 
         
  
