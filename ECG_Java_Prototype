@@ -179,10 +179,6 @@ import javax.swing.JFrame;
 
 public class Main {
 	
-	/*
-	 * linear interpolation can make the graph have random spikes because of lossy double
-	 * to int conversion but this should become less noticable at bigger window sizes
-	 */
 	//enables linear interpolation (see Path class)
 	final static boolean lerpEnabled = false;
 	
@@ -205,6 +201,9 @@ public class Main {
 
 import java.awt.Canvas;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Timer;
 
 public class Display extends Canvas{
 	private static final long serialVersionUID = 8274011568777903027L;
@@ -214,6 +213,16 @@ public class Display extends Canvas{
 	//baseline is the y coordinate where the ECG will be drawn
 	//offset is so that multiple ECG cycles can be shown
 	private int width, height, baseline, offset = 0;
+	//the starting index of the cycle
+	private int index = 0;
+	
+	
+	//scales the image of the path
+	private double scale = 1;
+	//the length of the moving line
+	private int length = 10;
+	
+	
 	public Display(int width, int height, Path ecg)
 	{
 		this.width = width;
@@ -225,24 +234,45 @@ public class Display extends Canvas{
 		baseline = height / 2;
 		//sets the size of the window
 		this.setSize(width,height);
+		
+		//timer that animates the moving line
+		 int delay = 10; //milliseconds
+		  ActionListener taskPerformer = new ActionListener() {
+		      public void actionPerformed(ActionEvent e) {
+		    	  index++;
+		          repaint();
+		      }
+		  };
+		  new Timer(delay, taskPerformer).start();
 	}
 	@Override
 	//displays the ECG
 	public void paint(Graphics g)
 	{
-		while (offset <= width)
+		//TODO fix awkward jump at end of one animation cycle
+		
+		//creates a set of lines equal to length
+		for (int i = 0; i < length; i++)
 		{
-			//
-			for(int i = 0; i < ecg.getPath().size() - 1; i++)
+			int x1 = (int)(ecg.getPath().get(index + i).getX() * scale) + offset;
+			int y1 = (int)(ecg.getPath().get(index + i).getY() * scale);
+			if (ecg.getPath().size() <= index + 1 + i)
 			{
-				int x1 = (int)ecg.getPath().get(i).getX() + offset;
-				int y1 = (int)ecg.getPath().get(i).getY();
-				int x2 = (int)ecg.getPath().get(i + 1).getX() + offset;
-				int y2 = (int)ecg.getPath().get(i+1).getY();
+				//increases the offset and repeats the cycle
+				offset += ecg.getLength() * scale;
+				index = -1;
+			}
+			int x2 = (int)(ecg.getPath().get(index + 1 + i).getX() * scale) + offset;
+			int y2 = (int)(ecg.getPath().get(index + 1 + i).getY() * scale);
+			if (x2 > width)
+			{
+				offset = 0;
+			}
+			else
+			{
 				g.drawLine(x1, height - (y1 + baseline), x2, height - (y2 + baseline));
 			}
-			//increases the offset and repeats the cycle
-			offset += ecg.getLength();
-		}
+		}		
 	}
 }
+
