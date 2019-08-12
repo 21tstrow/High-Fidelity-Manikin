@@ -1,0 +1,88 @@
+from tkinter import *
+from tkinter import ttk
+from PIL import ImageTk, Image
+
+#For demo only
+class EmptyTab(Frame):
+    def __init__(self, parent, *args, **kwargs):
+        Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+
+#For demo only
+class ImageTab(Frame):
+    def __init__(self, parent, *args, img = None, **kwargs):
+        Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        self.canvas = Canvas(self, width = 600, height = 600)
+        self.canvas.pack(expand = 1, fill = "both")
+        self.change_image(img)
+                
+    def change_image(self, img):
+        if img != None:
+            try:
+                self.image = ImageTk.PhotoImage(Image.open(img))
+                self.canvas.create_image((0,0),image = self.image,anchor = NW)
+            except FileNotFoundError:
+                print("The pathname " + img + " was not found")
+        
+class HeartRate(Frame):
+    def __init__(self, parent, *args, **kwargs):
+        Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        #To be implemented
+        self.placeholder = Entry(self)
+        self.placeholder.pack(expand = 1, fill = "both")
+    
+class ScenarioList(Frame):
+    def __init__(self, parent, *args, **kwargs):
+        Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        self.scenarios = Listbox(self, selectmode = SINGLE)
+        self.scenarios.bind("<Double-Button-1>", self.change_active)
+        self.add_scenarios()
+        self.scenarios.pack(expand = 1, fill = "both")
+
+    def add_scenarios(self):
+        self.scenarios.insert(1, "Tommy")
+        self.scenarios.insert(2, "Thomas")
+        self.scenarios.insert(3, "Thommy")
+        #Entries
+
+    def change_active(self, event):
+        pass
+    
+class MainApplication(Tk):
+    def __init__(self, *args, **kwargs):
+        Tk.__init__(self, *args, **kwargs)
+        self.leftNotebook = ttk.Notebook()
+        self.rightNotebook = ttk.Notebook()
+        self.add_tabs()
+
+        self.screen_width = self.winfo_screenwidth()
+        self.screen_height = self.winfo_screenheight()
+        self.leftNotebook.place(x = 0, y = 0, relheight = 1.0, relwidth = 0.25)
+        self.rightNotebook.place(x = self.screen_width / 4, y = 0, relheight = 1.0, relwidth = 0.75)
+        
+    def force_size(self):
+        pass
+        
+    def add_tabs(self):
+        s = ScenarioList(self.leftNotebook)
+        i = ImageTab(self.rightNotebook, img = "/Users/arthurgarvin/Desktop/smalldoggo.JPG")
+        #Empty Tabs
+        e1 = EmptyTab(self.leftNotebook)
+        e2 = EmptyTab(self.rightNotebook)
+        e3 = EmptyTab(self.rightNotebook)
+        #Add Tabs to Notebooks
+        self.leftNotebook.add(s, text = "Scenarios")
+        self.rightNotebook.add(i, text = "Personal Information")
+        #Empty Tabs
+        self.leftNotebook.add(e1, text = "Sample Text")
+        self.rightNotebook.add(e2, text = "Sample Text")
+        self.rightNotebook.add(e3, text = "Sample Text")
+
+
+main = MainApplication()
+main.title("ProtoGUI")
+main.geometry("%dx%d" % (main.screen_width, main.screen_height))
+main.mainloop()
